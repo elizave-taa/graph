@@ -8,7 +8,6 @@ class Graph(object):
 
     countOfNodes = 0
     matrix = []
-    G = nx.DiGraph()
     newG = nx.DiGraph()
 
     def __init__(self, countOfNodes):
@@ -21,7 +20,7 @@ class Graph(object):
         for i in range(0, len(matrix)):
             for j in range(0, len(matrix)):
                 if i != j:
-                    flag = random.randint(1,3)
+                    flag = random.randint(1,2)
                     randInt = random.randint(7,30)
                     if flag == 1:
                         randInt = math.inf
@@ -32,15 +31,14 @@ class Graph(object):
 
 
     def removeEdge(self, start, end):
-        if self.matrix[start][end] != math.inf:
-            self.matrix[start][end] = math.inf
-            self.matrix[end][start] = math.infself.matrix[start][end]
+        self.matrix[start-1][end-1] = math.inf
+        self.matrix[end-1][start-1] = math.inf
 
-    def addEdge(self, start, end):
-        if self.matrix[start][end] == math.inf:
-            randInt = random.randint(7, 30)
-            self.matrix[start][end] = randInt
-            self.matrix[end][start] = self.matrix[start][end]
+    def addEdge(self, start, end, weight):
+        if self.matrix[start-1][end-1] == math.inf:
+            self.matrix[start-1][end-1] = weight
+            self.matrix[end-1][start-1] = weight
+
     def showGraphMatrix(self):
         strForShowMatrix = "\t"
         for i in range(0, len(self.matrix)):
@@ -64,25 +62,24 @@ class Graph(object):
         return amin
 
     def visualGraph(self):
+        G = nx.DiGraph()
         for i in range(0, len(self.matrix)):
             for j in range(0, len(self.matrix)):
                 if i != j and self.matrix[i][j] != math.inf:
-                    self.G.add_edge(i+1,j+1,weight=self.matrix[i][j])
+                    G.add_edge(i+1, j+1, weight=self.matrix[i][j])
         # Определение позиций узлов
-        pos = nx.spring_layout(self.G)
+        pos = nx.spring_layout(G)
 
         # Получение весов ребер
-        edge_labels = nx.get_edge_attributes(self.G, 'weight')
+        edge_labels = nx.get_edge_attributes(G, 'weight')
 
         plt.figure("Изначальный граф")
-        nx.draw_networkx_nodes(self.G, pos)
-        nx.draw_networkx_edges(self.G, pos)
-        nx.draw_networkx_edge_labels(self.G, pos, edge_labels=edge_labels)
-        nx.draw_networkx_labels(self.G, pos)
+        nx.draw_networkx_nodes(G, pos)
+        nx.draw_networkx_edges(G, pos)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        nx.draw_networkx_labels(G, pos)
 
         plt.show()
-
-
 
     def deykstra(self, start, end):
         # Визуализация изначального графа
@@ -154,3 +151,9 @@ if start == end or start < 0 or start > с-1 or end < 0 or end > с-1:
     print("Вершины указаны некорректно")
 else:
     graph.deykstra(start, end)
+
+graph.removeEdge(3,5)
+graph.removeEdge(1,2)
+graph.addEdge(3,4, 20)
+graph.showGraphMatrix()
+#graph.visualGraph()
