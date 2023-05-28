@@ -12,23 +12,18 @@ class Graph(object):
 
     def __init__(self, countOfNodes):
         self.countOfNodes = countOfNodes
-        self.matrix = self.generateGraph(countOfNodes)
+        self.matrix = [[0] * countOfNodes for i in range(countOfNodes)]
 
-    def generateGraph(self,countOfNodes):
-        matrix = [[0]*countOfNodes for i in range(countOfNodes)]
-
-        for i in range(0, len(matrix)):
-            for j in range(0, len(matrix)):
+    def generateGraph(self):
+        for i in range(0, len(self.matrix)):
+            for j in range(0, len(self.matrix)):
                 if i != j:
                     flag = random.randint(1,2)
                     randInt = random.randint(7,30)
                     if flag == 1:
                         randInt = math.inf
-                    matrix[i][j] = randInt
-                    matrix[j][i] = matrix[i][j]
-
-        return matrix
-
+                    self.matrix[i][j] = randInt
+                    self.matrix[j][i] = self.matrix[i][j]
 
     def removeEdge(self, start, end):
         self.matrix[start-1][end-1] = math.inf
@@ -80,6 +75,20 @@ class Graph(object):
         nx.draw_networkx_labels(G, pos)
 
         plt.show()
+
+    def loadFromFile(self, str):
+
+        graph_file = open(str, "r")  # Открываем файл в режиме чтения
+        graph_data = graph_file.readlines()  # Читаем все строки
+        self.matrix = [[math.inf] * self.countOfNodes for i in range(self.countOfNodes)]
+        for line in graph_data:
+            # Разбиваем строку на 3 значения: первая точка, вторая точка, вес ребра
+            vertex1, vertex2, weight = [int(x) for x in line.split()]
+            if vertex1 <= self.countOfNodes and vertex2 <= self.countOfNodes:
+                self.matrix[vertex1 - 1][vertex2 - 1] = weight
+                self.matrix[vertex2 - 1][vertex1 - 1] = weight
+        for i in range(0, len(self.matrix)):
+            self.matrix[i][i] = 0
 
     def deykstra(self, start, end):
         # Визуализация изначального графа
@@ -144,16 +153,18 @@ class Graph(object):
 
 с = int(input("Введите кол-во вершин: "))
 graph = Graph(с)
+#graph.generateGraph()
+graph.loadFromFile("graph.txt")
 graph.showGraphMatrix()
-start = int(input("Введите стартвую вершину: ")) - 1
+start = int(input("Введите стартовую вершину: ")) - 1
 end = int(input("Введите конечную вершину: ")) - 1
 if start == end or start < 0 or start > с-1 or end < 0 or end > с-1:
     print("Вершины указаны некорректно")
 else:
     graph.deykstra(start, end)
 
-graph.removeEdge(3,5)
-graph.removeEdge(1,2)
-graph.addEdge(3,4, 20)
-graph.showGraphMatrix()
+#graph.removeEdge(3,5)
+#graph.removeEdge(1,2)
+#graph.addEdge(3,4, 20)
+#graph.showGraphMatrix()
 #graph.visualGraph()
