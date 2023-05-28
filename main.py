@@ -68,11 +68,6 @@ class Graph(object):
             for j in range(0, len(self.matrix)):
                 if i != j and self.matrix[i][j] != math.inf:
                     self.G.add_edge(i+1,j+1,weight=self.matrix[i][j])
-        plt.show()
-
-    def deykstra(self, start, end):
-        # Визуализация изначального графа
-        self.visualGraph()
         # Определение позиций узлов
         pos = nx.spring_layout(self.G)
 
@@ -85,6 +80,13 @@ class Graph(object):
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels=edge_labels)
         nx.draw_networkx_labels(self.G, pos)
 
+        plt.show()
+
+
+
+    def deykstra(self, start, end):
+        # Визуализация изначального графа
+        self.visualGraph()
 
         N = len(self.matrix)  # число вершин в графе
         T = [math.inf] * N  # последняя строка таблицы
@@ -140,6 +142,8 @@ class Graph(object):
         nx.draw_networkx_edge_labels(self.newG, pos, edge_labels=edge_labels)
         nx.draw_networkx_labels(self.newG, pos)
         plt.show()
+
+
 
 с = int(input("Введите кол-во вершин: "))
 graph = Graph(с)
